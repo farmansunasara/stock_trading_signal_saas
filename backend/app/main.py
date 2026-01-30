@@ -32,6 +32,7 @@ app.include_router(signals.router)
 
 @app.get("/")
 async def root():
+    """Health check endpoint"""
     return {
         "status": "online",
         "message": "Trading Signals SaaS API",
@@ -41,4 +42,5 @@ async def root():
 
 @app.get("/health")
 async def health_check():
+    """Health check for deployment"""
     return {"status": "healthy"}

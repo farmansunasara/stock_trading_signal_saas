@@ -1,0 +1,179 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  color: #333;
+  font-size: 24px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.user-email {
+  color: #666;
+  font-size: 14px;
+}
+
+.subscription-status {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.subscription-status h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.status-badge.paid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.free {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.upgrade-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.upgrade-section p {
+  margin-bottom: 12px;
+  color: #666;
+}
+
+.btn-subscribe {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.limit-info {
+  margin-top: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.signals-section {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: #333;
+}
+
+.btn-refresh {
+  background: #2196F3;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-refresh:hover {
+  background: #1976D2;
+}
+
+.signals-table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f5f5f5;
+}
+
+th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.symbol {
+  font-weight: 600;
+  color: #333;
+}
+
+.signal-type {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.signal-type.buy {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.signal-type.sell {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.signal-type.hold {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+tbody tr:hover {
+  background: #f9f9f9;
+}
