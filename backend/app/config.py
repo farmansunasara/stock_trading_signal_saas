@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
+from pydantic import validator
 from typing import Optional
+import os
 
 
 class Settings(BaseSettings):
@@ -23,8 +25,20 @@ class Settings(BaseSettings):
     # CORS
     FRONTEND_URL: str = "http://localhost:3000"
     
+    # Environment
+    DEBUG: bool = False
+    ENVIRONMENT: str = "development"
+    ALLOWED_HOSTS: str = "localhost,127.0.0.1"
+    
     class Config:
         env_file = ".env"
+    
+    @validator('SECRET_KEY')
+    def validate_secret_key_length(cls, v):
+        """Ensure SECRET_KEY is long enough"""
+        if len(v) < 32:
+            raise ValueError('SECRET_KEY must be at least 32 characters')
+        return v
 
 
 settings = Settings()
