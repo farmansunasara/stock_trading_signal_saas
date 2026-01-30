@@ -87,18 +87,74 @@ This prototype demonstrates a complete SaaS workflow:
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+
-- Redis (Docker or local installation)
+- Docker & Docker Compose (recommended for Redis + PostgreSQL)
 
-### 1. Clone Repository
+### Option 1: Using Docker Compose (Recommended) 🐳
+
+**Advantages:**
+- ✅ Both Redis and PostgreSQL ready to go
+- ✅ No manual installation needed
+- ✅ Isolated environment
+- ✅ Easy cleanup with `docker-compose down`
+
+#### Start Services
 ```bash
-git clone <repository-url>
-cd stock_trading_signal_saas
+# From project root
+docker-compose up -d
+
+# Verify services are running
+docker-compose ps
+
+# Check service health
+docker-compose logs redis      # Redis logs
+docker-compose logs postgres   # PostgreSQL logs
 ```
 
-### 2. Start Redis
-Using Docker (recommended):
+**Services Started:**
+- Redis on `redis://localhost:6379`
+- PostgreSQL on `postgresql://postgres:postgres@localhost:5432/trading_signals`
+
+#### Setup Backend
 ```bash
-docker run -d -p 6379:6379 redis
+cd backend
+
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Use Docker environment file
+copy ..\env.docker .env
+
+# Run migrations (if using PostgreSQL in production)
+# For local SQLite: leave DATABASE_URL as is
+
+# Start backend
+python -m uvicorn app.main:app --reload --port 8000
+```
+
+#### Setup Frontend
+```bash
+cd frontend
+npm install
+npm start  # Runs on port 3000
+```
+
+#### Stop Services
+```bash
+docker-compose down -v  # -v removes volumes
+```
+
+---
+
+### Option 2: Manual Setup (Local Redis)
+
+#### Start Redis
+Using Docker:
+```bash
+docker run -d --name redis -p 6379:6379 redis:7-alpine
 ```
 
 Or use local Redis installation on port 6379.
@@ -172,11 +228,32 @@ cd backend
 pytest tests/ -v --cov=app
 ```
 
-Expected tests:
+### Test Coverage (19 tests)
+
+**Authentication Tests (3)**
 - ✅ `test_signup_login` - JWT token generation
 - ✅ `test_auth_protected_route` - 401 without auth
+- ✅ `test_auth_me_with_valid_token` - Get user info
+
+**Billing Tests (13)**
+- ✅ `test_create_checkout_session` - Stripe checkout creation
+- ✅ `test_create_checkout_session_existing_customer` - Existing customer flow
+- ✅ `test_create_checkout_session_without_auth` - Auth required
+- ✅ `test_get_billing_status_free_user` - Free user status
+- ✅ `test_get_billing_status_paid_user` - Paid user status
+- ✅ `test_webhook_checkout_completed` - Payment success handling
+- ✅ `test_webhook_invoice_payment_succeeded` - Subscription renewal
+- ✅ `test_webhook_subscription_deleted` - Cancellation handling
+- ✅ `test_webhook_idempotency` - **Prevent duplicate processing**
+- ✅ `test_webhook_invalid_signature` - Signature verification
+- ✅ `test_webhook_invalid_payload` - Payload validation
+- ✅ `test_webhook_unknown_event_type` - Graceful handling
+- ✅ `test_stripe_error_handling` - Error scenarios
+
+**Signals Tests (3)**
 - ✅ `test_signals_free_user` - Rate limiting (3/day)
 - ✅ `test_signals_paid_user` - Unlimited access
+- ✅ `test_signals_without_auth` - Auth required
 
 ## 💳 Stripe Webhook Testing
 
@@ -286,11 +363,56 @@ redis.setex(redis_key, 86400, "1")  # 24h TTL
 
 ## 🚀 Deployment
 
-### Backend (Railway / Render)
+### Docker-Based Local Development
+
+**Complete Stack:**
+```bash
+# Start everything
+docker-compose up -d
+
+# Access services:
+# - Backend:   http://localhost:8000
+# - Frontend:  http://localhost:3000
+# - Redis:     redis://localhost:6379
+# - Postgres:  postgresql://postgres:postgres@localhost:5432/trading_signals
+
+# View logs
+docker-compose logs -f backend   # Backend logs
+docker-compose logs -f redis     # Redis logs
+
+# Stop everything
+docker-compose down
+```
+
+---
+
+### Cloud Deployment
+
+#### Backend (Railway / Render)
 1. Push code to GitHub
 2. Connect repository to Railway/Render
-3. Set environment variables (use PostgreSQL for DATABASE_URL in prod)
+3. Add environment variables:
+   - `DATABASE_URL=postgresql://...`
+   - `REDIS_URL=redis://...`
+   - Stripe keys
 4. Deploy and note the backend URL
+
+**Railway Setup Example:**
+```bash
+# 1. Install Railway CLI
+npm i -g @railway/cli
+
+# 2. Login
+railway login
+
+# 3. Initialize project
+railway init
+
+# 4. Link to GitHub
+# 5. Add PostgreSQL & Redis from Railway dashboard
+# 6. Deploy
+railway up
+```
 
 ### Frontend (Vercel / Netlify)
 1. Push code to GitHub
