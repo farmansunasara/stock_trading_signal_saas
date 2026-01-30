@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .models import user
-from .routers import auth, billing, signals
+from .auth import router as auth
+from .billing import router as billing
+from .signals import router as signals
 from .config import settings
 
 # Create database tables
