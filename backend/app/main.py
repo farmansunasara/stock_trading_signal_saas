@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .models import user
-from .auth import router as auth
-from .billing import router as billing
-from .signals import router as signals
+from .auth.router import router as auth_router
+from .billing.router import router as billing_router
+from .signals.router import router as signals_router
 from .config import settings
 
 # Create database tables
@@ -27,9 +27,9 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router)
-app.include_router(billing.router)
-app.include_router(signals.router)
+app.include_router(auth_router)
+app.include_router(billing_router)
+app.include_router(signals_router)
 
 
 @app.get("/")
