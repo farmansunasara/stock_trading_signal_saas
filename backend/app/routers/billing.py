@@ -32,7 +32,7 @@ async def create_checkout_session(
             customer_id = current_user.stripe_customer_id
         
         # Create checkout session
-        success_url = checkout_data.success_url or f"{settings.FRONTEND_URL}/dashboard?success=true"
+        success_url = checkout_data.success_url or f"{settings.FRONTEND_URL}/dashboard?success=true&session_id={{CHECKOUT_SESSION_ID}}"
         cancel_url = checkout_data.cancel_url or f"{settings.FRONTEND_URL}/dashboard?canceled=true"
         
         checkout_session = stripe.checkout.Session.create(
