@@ -5,24 +5,30 @@ import { signalsAPI, billingAPI } from '../services/api';
 import '../styles/Dashboard.css';
 
 function Dashboard() {
-  const { user, logout, refreshUser } = useAuth();
+  const { user, loading, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [signals, setSignals] = useState([]);
   const [userLimit, setUserLimit] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loadingSignals, setLoadingSignals] = useState(true);
   const [error, setError] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
+  // Redirect to login if not authenticated (only after auth is initialized)
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       navigate('/login');
-      return;
     }
-    fetchSignals();
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
+
+  // Fetch signals when user is loaded
+  useEffect(() => {
+    if (user) {
+      fetchSignals();
+    }
+  }, [user]);
 
   const fetchSignals = async () => {
-    setLoading(true);
+    setLoadingSignals(true);
     setError('');
     try {
       const response = await signalsAPI.getSignals();
@@ -31,7 +37,7 @@ function Dashboard() {
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to fetch signals');
     } finally {
-      setLoading(false);
+      setLoadingSignals(false);
     }
   };
 
@@ -71,6 +77,10 @@ function Dashboard() {
   }, [refreshUser]);
 
   if (loading) {
+    return <div className="loading">Authenticating...</div>;
+  }
+
+  if (loadingSignals) {
     return <div className="loading">Loading signals...</div>;
   }
 

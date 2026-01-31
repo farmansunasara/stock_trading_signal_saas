@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in on mount
@@ -14,6 +15,7 @@ export const AuthProvider = ({ children }) => {
       fetchUser();
     } else {
       setLoading(false);
+      setInitialized(true);
     }
   }, []);
 
@@ -21,11 +23,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.getMe();
       setUser(response.data);
+      setLoading(false);
+      setInitialized(true);
     } catch (error) {
       console.error('Failed to fetch user:', error);
       localStorage.removeItem('token');
-    } finally {
       setLoading(false);
+      setInitialized(true);
     }
   };
 
